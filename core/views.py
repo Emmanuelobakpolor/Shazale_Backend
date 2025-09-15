@@ -5,11 +5,14 @@ import requests
 from django.conf import settings
 import logging
 import time
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 from .models import AudioSearch, SearchResult
 
 logger = logging.getLogger(__name__)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class UploadView(APIView):
     def post(self, request, format=None):
         logger.info("UploadView POST called")
@@ -107,11 +110,15 @@ class UploadView(APIView):
                 'api_token': settings.AUDD_API_TOKEN,
                 'return': 'timecode,apple_music,spotify',
             }
+            # Log request details for debugging
+            logger.info(f"Sending request to AudD.io with api_token: {data['api_token']}, file: {file.name if hasattr(file, 'name') else 'unknown'}")
             response = requests.post(url, files=files, data=data)
             logger.info(f"AudD.io API response status: {response.status_code}")
+            logger.info(f"AudD.io API response headers: {response.headers}")
+            logger.info(f"AudD.io API response text: {response.text}")
             if response.status_code == 200:
                 data = response.json()
-                logger.info(f"AudD.io API response: {data}")
+                logger.info(f"AudD.io API response JSON: {data}")
                 if data.get('status') == 'success' and 'result' in data:
                     return data
                 else:
