@@ -19,12 +19,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+import os
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-msz@b2zs@%wup6ewzl*e%61_@ehur(c0cb%(o+=q4*!pceiwn!'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-msz@b2zs@%wup6ewzl*e%61_@ehur(c0cb%(o+=q4*!pceiwn!')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = ['10.198.167.42', 'localhost', '127.0.0.1', '10.0.2.2', '10.85.100.42']
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 CORS_ALLOW_ALL_ORIGINS = True  # For testing only; restrict in production
 # OR
 CORS_ALLOWED_ORIGINS = [
@@ -47,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
      # Third-party
     'rest_framework',
+    'whitenoise.runserver_nostatic',
 
     # Local
     'core',
@@ -67,8 +70,8 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -144,6 +147,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -151,6 +155,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # API Keys
-AUDD_API_TOKEN = 'b4ef37c5775a4289a4bf8bffd090f264'
-YOUTUBE_API_KEY = 'AIzaSyBzIKFVvf3wOlslXktcElV4CJj3MRkTUG8'
-TMDB_API_KEY = 'b317a92a9d714a1d5d9b9a884c23b380'  # Get from https://www.themoviedb.org/settings/api
+AUDD_API_TOKEN = os.environ.get('AUDD_API_TOKEN', 'b4ef37c5775a4289a4bf8bffd090f264')
+YOUTUBE_API_KEY = os.environ.get('YOUTUBE_API_KEY', 'AIzaSyBzIKFVvf3wOlslXktcElV4CJj3MRkTUG8')
+TMDB_API_KEY = os.environ.get('TMDB_API_KEY', 'b317a92a9d714a1d5d9b9a884c23b380')  # Get from https://www.themoviedb.org/settings/api
