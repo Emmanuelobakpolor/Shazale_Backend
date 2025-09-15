@@ -26,17 +26,15 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-msz@b2zs@%wup6ewzl*e%
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
-ALLOWED_HOSTS='https://shazale-backend.onrender.com'
-CORS_ALLOW_ALL_ORIGINS = True  # For testing only; restrict in production
-# OR
+
+ALLOWED_HOSTS = ['shazale-backend.onrender.com', 'localhost', '127.0.0.1']
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://10.0.2.2:8000",
     "http://10.198.167.42:8000",
     "http://10.198.167.42",
-    
+    "https://shazale-backend.onrender.com",  # Add Render domain
 ]
-
 
 # Application definition
 
